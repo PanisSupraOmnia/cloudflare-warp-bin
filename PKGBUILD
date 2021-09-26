@@ -1,16 +1,18 @@
+#!/hint/bash -e
 # Maintainer: Leon Mergen <leon@solatis.com>
 # Co-Maintainer: Barfin
 pkgname=cloudflare-warp-bin
 pkgver=2021.8.1
-pkgrel=2
+pkgrel=3
 pkgdesc="Cloudflare Warp Client"
 
 url="https://developers.cloudflare.com/warp-client/"
-license=("custom")
+license=("unknown")
 
-depends=("glibc")
+depends=("dbus")
 arch=('x86_64')
-provides=('warp-cli' 'warp-diag' 'warp-svc')
+provides=("${pkgname%-bin}" 'warp-cli' 'warp-diag' 'warp-svc')
+conflicts=("${pkgname%-bin}")
 
 # https://pkg.cloudflareclient.com/packages/cloudflare-warp
 source=("https://pkg.cloudflareclient.com/uploads/cloudflare_warp_2021_8_1_1_amd64_a8f66bae8a.deb")
@@ -18,7 +20,11 @@ source=("https://pkg.cloudflareclient.com/uploads/cloudflare_warp_2021_8_1_1_amd
 sha256sums=('4a4937bc3fceb5fa69332d6cbfd42496959d99053bf3d7661dcf6fbee1f85341')
 install=$pkgname.install
 
+prepare() {
+    tar -xzvf data.tar.gz
+}
+
 package() {
-    mkdir ${pkgdir}/usr/
-    tar -xzvf  data.tar.gz -C "${pkgdir}/usr/"
+    install -dm755 "$pkgdir/usr"
+    cp -rt "$pkgdir/usr" "bin/" "lib/" "usr/share"
 }
